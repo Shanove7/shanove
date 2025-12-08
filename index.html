@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shanove | Xyon AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="top-navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <span class="brand-text">S<span class="brand-dot">.</span></span>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="nav-menu">
+                    <button class="nav-item active" onclick="switchTab('info')" data-tooltip="Profile"><i class="fas fa-user"></i></button>
+                    <button class="nav-item" onclick="switchTab('sewabot')" data-tooltip="Store"><i class="fas fa-store"></i></button>
+                    <button class="nav-item ai-nav" onclick="switchTab('chatai')" data-tooltip="AI Chat"><i class="fas fa-robot"></i></button>
+                    <button class="nav-item" onclick="switchTab('donasi')" data-tooltip="Wallet"><i class="fas fa-wallet"></i></button>
+                    <button class="nav-item" onclick="switchTab('contact')" data-tooltip="Contact"><i class="fas fa-envelope"></i></button>
+                </div>
+                <div class="nav-separator"></div>
+                <button id="theme-btn" onclick="toggleTheme()">
+                    <div class="theme-icon-wrap">
+                        <i class="fas fa-sun" id="sun-icon"></i>
+                        <i class="fas fa-moon" id="moon-icon"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+    <aside id="aiSidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>RIWAYAT CHAT</h3>
+            <button class="close-btn" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <button class="new-chat-btn" onclick="userClickNewChat()">
+            <i class="fas fa-plus"></i> Chat Baru
+        </button>
+        <div class="history-list" id="chatHistoryList">
+            </div>
+    </aside>
+
+    <main id="main-container">
+        
+        <section id="page-info" class="page active">
+            <div class="hero-card animate-up">
+                <div class="hero-glow"></div> <div class="profile-section">
+                    <div class="img-container">
+                        <img src="image/logo.png" alt="Profile" onerror="this.src='https://via.placeholder.com/150'">
+                        <div class="status-badge"><i class="fas fa-check"></i></div>
+                    </div>
+                    <div class="text-content">
+                        <div class="badge-pill">Open for Projects</div>
+                        <h1>Leo (Shanove)</h1>
+                        <p class="role">Founder of <span class="highlight">Xyon Bot</span> & Core Team <span class="highlight">Produse</span></p>
+                        
+                        <div class="bio-text">
+                            Seorang pengembang perangkat lunak yang berfokus pada otomatisasi WhatsApp dan integrasi AI.
+                            Saat ini aktif mengembangkan ekosistem <b>Project Produse</b> untuk membantu produktivitas digital.
+                            <br><br>
+                            💻 <b>Favorite Stack:</b> <span class="js-tag"><i class="fab fa-js"></i> JavaScript (Node.js)</span>
+                        </div>
+
+                        <div class="social-links">
+                            <a href="https://instagram.com/shnvnkonv_" class="soc-btn ig"><i class="fab fa-instagram"></i></a>
+                            <a href="https://github.com" class="soc-btn gh"><i class="fab fa-github"></i></a>
+                            <a href="https://wa.me/6285185032092" class="soc-btn wa"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid animate-up delay-1">
+                <div class="stat-card" onclick="switchTab('sewabot')">
+                    <div class="icon-box blue"><i class="fas fa-server"></i></div>
+                    <h3>Sewa Bot</h3>
+                    <p>24/7 Active</p>
+                </div>
+                <div class="stat-card" onclick="switchTab('chatai')">
+                    <div class="icon-box green"><i class="fas fa-brain"></i></div>
+                    <h3>Xyon AI</h3>
+                    <p>Smart Coding</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-sewabot" class="page">
+            <div class="page-header animate-left">
+                <h2>Paket Layanan</h2>
+                <p>Otomatisasi Grup WhatsApp Terbaik</p>
+            </div>
+            <div class="pricing-list">
+                <div class="price-card animate-left delay-1">
+                    <div class="price-header">
+                        <div class="price-icon bronze-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div>
+                            <span class="plan-name">BRONZE</span>
+                            <span class="price">Rp 15.000<small>/bln</small></span>
+                        </div>
+                    </div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> 1 Grup WhatsApp</li>
+                        <li><i class="fas fa-check-circle"></i> Auto Welcome/Leave</li>
+                        <li><i class="fas fa-check-circle"></i> Hidetag & Tagall</li>
+                        <li><i class="fas fa-check-circle"></i> Sticker Maker</li>
+                    </ul>
+                    <button class="action-btn outline" onclick="orderWa('Bronze', '15.000')">
+                        <i class="fab fa-whatsapp"></i> Order Bronze
+                    </button>
+                </div>
+
+                <div class="price-card best-value animate-left delay-2">
+                    <div class="tag">RECOMMENDED</div>
+                    <div class="price-header">
+                        <div class="price-icon silver-icon"><i class="fas fa-rocket"></i></div>
+                        <div>
+                            <span class="plan-name">SILVER</span>
+                            <span class="price">Rp 25.000<small>/2 bln</small></span>
+                        </div>
+                    </div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> <b>Semua Fitur Bronze</b></li>
+                        <li><i class="fas fa-check-circle"></i> RPG Game System</li>
+                        <li><i class="fas fa-check-circle"></i> Store & Topup Menu</li>
+                        <li><i class="fas fa-check-circle"></i> Antilink & Antibot</li>
+                    </ul>
+                    <button class="action-btn filled" onclick="orderWa('Silver', '25.000')">
+                        <i class="fab fa-whatsapp"></i> Order Silver
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-chatai" class="page full-height">
+            <div class="chat-header-custom">
+                <button class="icon-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <div class="chat-info">
+                    <h3 id="chatTitle">New Chat</h3>
+                    <span class="status"><span class="dot-online"></span> Xyon Bot (Llama 3.3)</span>
+                </div>
+                <div class="chat-actions">
+                    <button class="icon-btn edit-btn" onclick="renameChat()" title="Rename"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn delete-btn" onclick="deleteChat()" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+
+            <div id="chatContainer" class="chat-messages">
+                <div class="empty-state">
+                    <div class="ai-logo-glow floating"><i class="fas fa-robot"></i></div>
+                    <h3>Halo, Saya Xyon!</h3>
+                    <p>Asisten AI pintar. Saya bisa menulis kode HTML, JS, Python, dan menjawab pertanyaanmu.</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <textarea id="aiInput" placeholder="Ketik pesan atau minta kodingan..." rows="1"></textarea>
+                    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div class="disclaimer">AI dapat membuat kesalahan. Cek kembali informasi penting.</div>
+            </div>
+        </section>
+
+        <section id="page-donasi" class="page">
+            <div class="page-header animate-up">
+                <h2>Metode Pembayaran</h2>
+                <p>Support server Xyon Bot agar tetap aktif</p>
+            </div>
+            <div class="wallet-grid">
+                <div class="wallet-card animate-up delay-1" onclick="copyToClip('085185032092')">
+                    <div class="wallet-icon dana"><img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA"></div>
+                    <div class="wallet-info"><h4>DANA</h4><p>0851-8503-2092</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-2" onclick="copyToClip('085182128985')">
+                    <div class="wallet-icon gopay"><img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GOPAY"></div>
+                    <div class="wallet-info"><h4>GOPAY</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-3" onclick="copyToClip('085185032092')">
+                    <div class="wallet-icon shopee"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="SHOPEE"></div>
+                    <div class="wallet-info"><h4>SHOPEEPAY</h4><p>0851-8503-2092</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-4" onclick="copyToClip('087767510608')">
+                    <div class="wallet-icon pulsa"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="wallet-info"><h4>PULSA (XL)</h4><p>0877-6751-0608</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-contact" class="page">
+            <div class="hero-card animate-up">
+                <h2>Hubungi Saya</h2>
+                <p style="margin-bottom: 20px; color: var(--text-muted);">
+                    Tertarik membuat Bot WhatsApp custom atau Website Portofolio seperti ini? Hubungi saya sekarang.
+                </p>
+                <button class="action-btn wa-btn" onclick="window.open('https://wa.me/6285185032092','_blank')">
+                    <i class="fab fa-whatsapp"></i> Chat WhatsApp
+                </button>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p>Designed & Built by <span class="creator-name">Kasan</span> 🚀</p>
+            <p style="font-size: 0.7rem; opacity: 0.6;">© 2024 Shanove Portfolio</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+  
