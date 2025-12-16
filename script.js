@@ -58,7 +58,7 @@ function loadChat(id) {
         chatContainer.innerHTML = `
             <div class="empty-state">
                 <div class="ai-logo-glow floating"><i class="fas fa-robot"></i></div>
-                <h3>Halo, Saya Xyon!</h3>
+                <h3>Halo, Saya Xyon Ai</h3>
                 <p>Mulai percakapan baru sekarang.</p>
             </div>`;
     } else {
