@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="top-navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <span class="brand-text">Xyon<span class="brand-dot">.</span></span>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="nav-menu">
+                    <button class="nav-item active" onclick="switchTab('info')" data-tooltip="Profile"><i class="fas fa-user"></i></button>
+                    <button class="nav-item" onclick="switchTab('sewabot')" data-tooltip="Sewa Bot"><i class="fas fa-robot"></i></button>
+                    <button class="nav-item ai-nav" onclick="switchTab('chatai')" data-tooltip="Xyon AI"><i class="fas fa-brain"></i></button>
+                    <button class="nav-item" onclick="switchTab('payment')" data-tooltip="Bayar"><i class="fas fa-wallet"></i></button>
+                    <button class="nav-item" onclick="switchTab('contact')" data-tooltip="Kontak"><i class="fas fa-address-book"></i></button>
+                </div>
+                <div class="nav-separator"></div>
+                <button id="theme-btn" onclick="toggleTheme()">
+                    <div class="theme-icon-wrap">
+                        <i class="fas fa-sun" id="sun-icon"></i>
+                        <i class="fas fa-moon" id="moon-icon"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <main id="main-container">
+        
+        <section id="page-info" class="page active">
+            <div class="hero-card animate-up">
+                <div class="hero-glow"></div> 
+                <div class="profile-section">
+                    <div class="img-container">
+                        <img src="https://files.catbox.moe/3ywdpz.jpg" alt="Profile Kasan"> 
+                        <div class="status-badge"><i class="fas fa-code"></i></div>
+                    </div>
+                    <div class="text-content">
+                        <div class="typing-container">
+                            <span class="typing-text"></span><span class="cursor">|</span>
+                        </div>
+                        <h1 class="main-title">Kasan (Xyon)</h1>
+                        <div class="bio-text">
+                            Halo, saya Kasan. Founder <b>Xyon Community</b>. 
+                            Spesialis Bot WhatsApp & Web Development.
+                        </div>
+                        <div class="social-links">
+                            <a href="https://www.instagram.com/shnvnkonv_?igsh=MWhqcndsemZkNnpueg==" class="soc-btn ig"><i class="fab fa-instagram"></i></a>
+                            <a href="https://github.com/Shanove7" class="soc-btn gh"><i class="fab fa-github"></i></a>
+                            <a href="https://wa.me/6285185032092" class="soc-btn wa"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid animate-up delay-1">
+                <div class="stat-card" onclick="switchTab('sewabot')">
+                    <div class="icon-box blue"><i class="fas fa-server"></i></div>
+                    <h3>Sewa Bot</h3>
+                    <p>Mulai 15k</p>
+                </div>
+                <div class="stat-card" onclick="switchTab('chatai')">
+                    <div class="icon-box green"><i class="fas fa-microchip"></i></div>
+                    <h3>Tanya Kasan</h3>
+                    <p>AI Assistant</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-sewabot" class="page">
+            <div class="page-header animate-left">
+                <h2>Paket Sewa Bot</h2>
+                <p>Pilih paket sesuai kebutuhan</p>
+            </div>
+            
+            <div class="pricing-list">
+                <div class="price-card animate-left delay-1">
+                    <div class="price-header">
+                        <div class="price-icon bronze-icon"><i class="fas fa-star"></i></div>
+                        <div>
+                            <span class="plan-name">STARTER</span>
+                            <span class="price">Rp 15.000<small>/bln</small></span>
+                        </div>
+                    </div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> Fitur Dasar & group</li>
+                        <li><i class="fas fa-check-circle"></i> 24/7 Uptime</li>
+                        <li class="disabled"><i class="fas fa-times-circle"></i> Premium Terkunci</li>
+                    </ul>
+                    <button class="action-btn outline" onclick="orderWa('Basic', '15.000')">Order Basic</button>
+                </div>
+
+                <div class="price-card best-value animate-left delay-2">
+                    <div class="tag">POPULAR</div>
+                    <div class="price-header">
+                        <div class="price-icon silver-icon"><i class="fas fa-crown"></i></div>
+                        <div>
+                            <span class="plan-name">PREMIUM</span>
+                            <span class="price">Rp 35.000<small>/bln</small></span>
+                        </div>
+                    </div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> <b>Semua Fitur Basic</b></li>
+                        <li><i class="fas fa-check-circle"></i> AI Chat (Cerdas)</li>
+                        <li><i class="fas fa-check-circle"></i> Premium Unlock</li>
+                    </ul>
+                    <button class="action-btn filled" onclick="orderWa('Premium', '35.000')">Order Premium</button>
+                </div>
+
+                <div class="price-card animate-left delay-3">
+                    <div class="price-header">
+                        <div class="price-icon gold-icon"><i class="fas fa-gem"></i></div>
+                        <div>
+                            <span class="plan-name">ULTIMATE (pribadi)</span>
+                            <span class="price">Rp 55.000<small>Satu Bulan</small></span>
+                        </div>
+                    </div>
+                    <ul class="features">
+                        <li><i class="fas fa-check-circle"></i> <b>Fitur Full Unlock & Premium</b></li>
+                        <li><i class="fas fa-check-circle"></i> Custom Nama Bot</li>
+                        <li><i class="fas fa-check-circle"></i> Prioritas Support</li>
+                    </ul>
+                    <button class="action-btn outline" onclick="orderWa('Ultimate', '55.000')">Order Ultimate</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-chatai" class="page chat-ui-new">
+            <div id="sidebar_background" onclick="closeChatSidebar()"></div>
+            
+            <div id="ai_sidebar">
+                <div id="ai_sidebar_header">
+                    <div id="ai_sidebar_header_top">
+                        <span>RIWAYAT</span>
+                        <i class="fa-solid fa-xmark" id="close_ai_sidebar" onclick="closeChatSidebar()"></i>
+                    </div>
+                    <button id="new_chat_button" onclick="startNewChat()">
+                        <i class="fa-solid fa-plus"></i> Chat Baru
+                    </button>
+                </div>
+                <div id="ai_sidebar_body"></div>
+            </div>
+
+            <div id="ai_navbar">
+                <div id="left">
+                    <i class="fa-solid fa-bars" id="AI_Sidebar_button" onclick="openChatSidebar()"></i>
+                    <div id="navbar_title">
+                        <span>XYON AI</span>
+                        <p id="typing-header" class="typing-subtitle"></p> 
+                    </div>
+                </div>
+                <div id="right">
+                    <i class="fa-solid fa-arrow-right-from-bracket" onclick="switchTab('info')" title="Exit Chat"></i>
+                </div>
+            </div>
+
+            <div id="chat_scroll_area">
+                <div id="chat_container">
+                     <div class="msg-row bot">
+                        <div class="bot-avatar-container"><i class="fas fa-robot"></i></div>
+                        <div class="chat-bubble bot">
+                            <div class="bubble-content">Halo! Saya Xyon AI. Siap bantu coding bot atau tugas lainnya!</div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+            <div id="input">
+                <div id="input_box">
+                    <textarea spellcheck="false" placeholder="Ketik pesan..." id="ai_input"></textarea>
+                    <button id="send_button" class="disabled"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-payment" class="page">
+            <div class="page-header animate-up">
+                <h2>Pembayaran</h2>
+            </div>
+            
+            <div class="qris-container animate-up" style="text-align: center; margin-bottom: 25px;">
+                <div class="qris-card" style="background: var(--bg-card); padding: 20px; border-radius: 20px; display: inline-block; box-shadow: var(--shadow); border:1px solid var(--border); max-width: 100%;">
+                    <h4 style="color: var(--text-main); margin-bottom: 15px; font-weight: bold;">SCAN QRIS</h4>
+                    <img src="https://files.catbox.moe/ohqgw7.jpg" alt="QRIS Code" style="width: 100%; max-width: 280px; height: auto; border-radius: 15px;">
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">N.a Kasan Xyon</p>
+                </div>
+             </div>
+
+            <div class="wallet-grid">
+                <div class="wallet-card animate-up delay-1" onclick="copyToClip('Lagi Eror')">
+                    <div class="wallet-icon dana"><img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA"></div>
+                    <div class="wallet-info"><h4>DANA</h4><p>Lagi Eror</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-2" onclick="copyToClip('0851-8212-8985')">
+                    <div class="wallet-icon gopay"><img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GOPAY"></div>
+                    <div class="wallet-info"><h4>GOPAY</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-3" onclick="copyToClip('0851-8212-8985')">
+                    <div class="wallet-icon shopee"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="SHOPEE"></div>
+                    <div class="wallet-info"><h4>SHOPEEPAY</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+                <div class="wallet-card animate-up delay-4" onclick="copyToClip('0851-8212-8985')">
+                    <div class="wallet-icon pulsa"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="wallet-info"><h4>PULSA (Tsel)</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-contact" class="page">
+            <div class="hero-card animate-up">
+                <h2>Hubungi Kami</h2>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top:15px;">
+                    <button class="action-btn wa-btn" onclick="window.open('https://wa.me/6285185032092','_blank')">
+                        <i class="fab fa-whatsapp"></i> Chat Owner
+                    </button>
+                    <button class="action-btn outline" onclick="window.open('https://wa.me/6285182128985','_blank')">
+                        <i class="fas fa-robot"></i> Test Bot WhatsApp
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
