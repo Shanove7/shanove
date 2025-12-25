@@ -1,16 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Website</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;500;700&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <title>Kasan | Founder Xyon</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;500;700&family=Fira+Code:wght@400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,11 +27,11 @@
             
             <div class="nav-controls">
                 <div class="nav-menu">
-                    <button class="nav-item active" onclick="switchTab('info')" data-tooltip="Profile"><i class="fas fa-user"></i></button>
-                    <button class="nav-item" onclick="switchTab('sewabot')" data-tooltip="Sewa Bot"><i class="fas fa-robot"></i></button>
-                    <button class="nav-item ai-nav" onclick="switchTab('chatai')" data-tooltip="Xyon AI"><i class="fas fa-brain"></i></button>
-                    <button class="nav-item" onclick="switchTab('payment')" data-tooltip="Bayar"><i class="fas fa-wallet"></i></button>
-                    <button class="nav-item" onclick="switchTab('contact')" data-tooltip="Kontak"><i class="fas fa-address-book"></i></button>
+                    <button class="nav-item active" onclick="switchTab('info')"><i class="fas fa-user"></i></button>
+                    <button class="nav-item" onclick="switchTab('sewabot')"><i class="fas fa-robot"></i></button>
+                    <button class="nav-item ai-nav" onclick="switchTab('chatai')"><i class="fas fa-brain"></i></button>
+                    <button class="nav-item" onclick="switchTab('payment')"><i class="fas fa-wallet"></i></button>
+                    <button class="nav-item" onclick="switchTab('contact')"><i class="fas fa-address-book"></i></button>
                 </div>
                 <div class="nav-separator"></div>
                 <button id="theme-btn" onclick="toggleTheme()">
@@ -40,7 +44,7 @@
         </div>
     </nav>
 
-    <div class="overlay" onclick="toggleSidebar()"></div>
+    <div class="overlay" onclick="toggleChatSidebar()"></div>
 
     <main id="main-container">
         
@@ -100,7 +104,7 @@
                         </div>
                     </div>
                     <ul class="features">
-                        <li><i class="fas fa-check-circle"></i> Fitur Dasar & group</li>
+                        <li><i class="fas fa-check-circle"></i> Fitur Dasar & Group</li>
                         <li><i class="fas fa-check-circle"></i> 24/7 Uptime</li>
                         <li class="disabled"><i class="fas fa-times-circle"></i> Premium Terkunci</li>
                     </ul>
@@ -128,12 +132,12 @@
                     <div class="price-header">
                         <div class="price-icon gold-icon"><i class="fas fa-gem"></i></div>
                         <div>
-                            <span class="plan-name">ULTIMATE (pribadi)</span>
-                            <span class="price">Rp 55.000<small>Satu Bulan</small></span>
+                            <span class="plan-name">ULTIMATE (Pribadi)</span>
+                            <span class="price">Rp 55.000<small>/bln</small></span>
                         </div>
                     </div>
                     <ul class="features">
-                        <li><i class="fas fa-check-circle"></i> <b>Fitur Full Unlock & Premium</b></li>
+                        <li><i class="fas fa-check-circle"></i> <b>Fitur Full Unlock</b></li>
                         <li><i class="fas fa-check-circle"></i> Custom Nama Bot</li>
                         <li><i class="fas fa-check-circle"></i> Prioritas Support</li>
                     </ul>
@@ -142,52 +146,59 @@
             </div>
         </section>
 
-        <section id="page-chatai" class="page chat-ui-new">
-            <div id="sidebar_background" onclick="closeChatSidebar()"></div>
-            
-            <div id="ai_sidebar">
-                <div id="ai_sidebar_header">
-                    <div id="ai_sidebar_header_top">
-                        <span>RIWAYAT</span>
-                        <i class="fa-solid fa-xmark" id="close_ai_sidebar" onclick="closeChatSidebar()"></i>
-                    </div>
-                    <button id="new_chat_button" onclick="startNewChat()">
-                        <i class="fa-solid fa-plus"></i> Chat Baru
-                    </button>
-                </div>
-                <div id="ai_sidebar_body"></div>
+        <section id="page-chatai" class="page chat-ui-wrapper">
+            <div class="ambient-bg">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
             </div>
 
-            <div id="ai_navbar">
-                <div id="left">
-                    <i class="fa-solid fa-bars" id="AI_Sidebar_button" onclick="openChatSidebar()"></i>
-                    <div id="navbar_title">
-                        <span>XYON AI</span>
-                        <p id="typing-header" class="typing-subtitle"></p> 
-                    </div>
+            <aside class="saann-sidebar" id="saann-sidebar">
+                <button class="new-chat-btn" onclick="startNewChat()">
+                    <span>+ New Chat</span>
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div class="history-label">RIWAYAT</div>
+                <div class="history-list" id="history-list"></div>
+                <div class="user-profile-chat">
+                    <div class="user-avatar-circle"></div>
+                    <span>Xyon User</span>
                 </div>
-                <div id="right">
-                    <i class="fa-solid fa-arrow-right-from-bracket" onclick="switchTab('info')" title="Exit Chat"></i>
-                </div>
-            </div>
+            </aside>
 
-            <div id="chat_scroll_area">
-                <div id="chat_container">
-                     <div class="msg-row bot">
-                        <div class="bot-avatar-container"><i class="fas fa-robot"></i></div>
-                        <div class="chat-bubble bot">
-                            <div class="bubble-content">Halo! Saya Xyon AI. Siap bantu coding bot atau tugas lainnya!</div>
+            <div class="saann-main">
+                <header class="saann-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="mobile-menu-btn" onclick="toggleChatSidebar()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="model-selector">
+                            Xyon AI <span class="model-ver">2.0</span>
                         </div>
-                     </div>
-                </div>
-            </div>
+                    </div>
+                    <i class="fas fa-times" style="font-size: 1.2rem; cursor: pointer; color: var(--chat-secondary);" onclick="switchTab('info')" title="Keluar Chat"></i>
+                </header>
 
-            <div id="input">
-                <div id="input_box">
-                    <textarea spellcheck="false" placeholder="Ketik pesan..." id="ai_input"></textarea>
-                    <button id="send_button" class="disabled"><i class="fa-solid fa-paper-plane"></i></button>
+                <div id="chat-container">
+                    <div class="empty-state" id="empty-state">
+                        <div class="saann-logo-large">
+                            <i class="fas fa-robot" style="font-size: 2rem; color: #fff;"></i>
+                        </div>
+                        <h2>Ada yang bisa gua bantu?</h2>
+                        <p style="opacity: 0.6; font-size: 0.9rem;">Gua Xyon AI, asisten santai lu.</p>
+                    </div>
+                </div>
+
+                <div class="loader" id="loading"><span></span><span></span><span></span></div>
+
+                <div class="input-wrapper-outer">
+                    <div class="input-box">
+                        <input type="text" id="ai_input" placeholder="Tanya Xyon..." autocomplete="off">
+                        <button id="send_button"><i class="fas fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
+            
+            <div class="chat-overlay" id="chat-overlay" onclick="toggleChatSidebar()"></div>
         </section>
 
         <section id="page-payment" class="page">
@@ -196,27 +207,27 @@
             </div>
             
             <div class="qris-container animate-up" style="text-align: center; margin-bottom: 25px;">
-                <div class="qris-card" style="background: var(--bg-card); padding: 20px; border-radius: 20px; display: inline-block; box-shadow: var(--shadow); border:1px solid var(--border); max-width: 100%;">
-                    <h4 style="color: var(--text-main); margin-bottom: 15px; font-weight: bold;">SCAN QRIS</h4>
-                    <img src="https://files.catbox.moe/ohqgw7.jpg" alt="QRIS Code" style="width: 100%; max-width: 280px; height: auto; border-radius: 15px;">
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">N.a Kasan Xyon</p>
+                <div class="qris-card">
+                    <h4>SCAN QRIS (All Payment)</h4>
+                    <img src="https://files.catbox.moe/ohqgw7.jpg" alt="QRIS Code" class="qris-img">
+                    <p>N.a Kasan Xyon</p>
                 </div>
              </div>
 
-            <div class="wallet-grid">
-                <div class="wallet-card animate-up delay-1" onclick="copyToClip('Lagi Eror')">
+            <div class="wallet-grid animate-up delay-2">
+                <div class="wallet-card" onclick="copyToClip('Lagi Eror')">
                     <div class="wallet-icon dana"><img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA"></div>
                     <div class="wallet-info"><h4>DANA</h4><p>Lagi Eror</p></div><i class="fas fa-copy copy-icon"></i>
                 </div>
-                <div class="wallet-card animate-up delay-2" onclick="copyToClip('0851-8212-8985')">
+                <div class="wallet-card" onclick="copyToClip('0851-8212-8985')">
                     <div class="wallet-icon gopay"><img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GOPAY"></div>
                     <div class="wallet-info"><h4>GOPAY</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
                 </div>
-                <div class="wallet-card animate-up delay-3" onclick="copyToClip('0851-8212-8985')">
+                <div class="wallet-card" onclick="copyToClip('0851-8212-8985')">
                     <div class="wallet-icon shopee"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="SHOPEE"></div>
                     <div class="wallet-info"><h4>SHOPEEPAY</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
                 </div>
-                <div class="wallet-card animate-up delay-4" onclick="copyToClip('0851-8212-8985')">
+                <div class="wallet-card" onclick="copyToClip('0851-8212-8985')">
                     <div class="wallet-icon pulsa"><i class="fas fa-mobile-alt"></i></div>
                     <div class="wallet-info"><h4>PULSA (Tsel)</h4><p>0851-8212-8985</p></div><i class="fas fa-copy copy-icon"></i>
                 </div>
@@ -241,4 +252,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
