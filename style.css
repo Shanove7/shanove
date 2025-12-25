@@ -1,31 +1,28 @@
-/* --- VARIABLES --- */
+/* --- VARIABLES (THEME XYON - DYNAMIC) --- */
 :root {
-    /* LIGHT MODE */
+    /* --- LIGHT MODE COLORS --- */
     --bg-main: #F3F4F6;       
     --bg-card: #FFFFFF;       
-    --bg-nav: rgba(255, 255, 255, 0.95);
+    --bg-nav: rgba(255, 255, 255, 0.9);
     --text-main: #1F2937;     
     --text-muted: #6B7280;    
     --border: #E5E7EB;        
     
-    --accent: #6366f1;        /* Indigo Xyon */
+    --accent: #6366f1;        
     --accent-glow: rgba(99, 102, 241, 0.2);
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
-    /* Chat Specific */
-    --chat-bg: #F0F2F5;
-    --bubble-user-bg: #6366f1;
-    --bubble-user-text: #ffffff;
-    --bubble-bot-bg: #FFFFFF;
-    --bubble-bot-text: #1F2937;
-    --input-area-bg: #FFFFFF;
+    /* Chat Specific Light */
+    --bot-bubble-bg: #FFFFFF;
+    --chat-sidebar-bg: #FFFFFF;
+    --input-bg: #FFFFFF;
 }
 
 [data-theme="dark"] {
-    /* DARK MODE */
+    /* --- DARK MODE COLORS --- */
     --bg-main: #0f172a;       
     --bg-card: #1e293b;       
-    --bg-nav: rgba(30, 41, 59, 0.95); 
+    --bg-nav: rgba(30, 41, 59, 0.9); 
     --text-main: #F8FAFC;     
     --text-muted: #94A3B8;    
     --border: #334155;        
@@ -34,65 +31,42 @@
     --accent-glow: rgba(129, 140, 248, 0.2);
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
-    /* Chat Specific */
-    --chat-bg: #0b1120;
-    --bubble-user-bg: #6366f1;
-    --bubble-user-text: #ffffff;
-    --bubble-bot-bg: #1e293b;
-    --bubble-bot-text: #F8FAFC;
-    --input-area-bg: #1e293b;
+    /* Chat Specific Dark */
+    --bot-bubble-bg: #1e293b;
+    --chat-sidebar-bg: #0f172a;
+    --input-bg: #1e293b;
 }
 
+/* GLOBAL RESET - ANTI GESER KANAN KIRI */
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; overflow-x: hidden; position: relative; }
 body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-main); height: 100vh; transition: 0.3s; }
 
 /* ========================================================
-   NAVBAR UTAMA (FIXED & RESPONSIVE)
+   NAVBAR UTAMA (FIXED & RAPI)
 ======================================================== */
 .top-navbar {
     position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-    width: 95%; max-width: 500px; height: 65px;
-    background: var(--bg-nav); backdrop-filter: blur(10px);
+    width: 95%; max-width: 500px; height: 60px;
+    background: var(--bg-nav); backdrop-filter: blur(15px);
     border: 1px solid var(--border); border-radius: 50px;
     box-shadow: var(--shadow); z-index: 100;
-    display: flex; align-items: center; padding: 0 10px; /* Padding ditambah */
-    overflow: hidden; /* Mencegah elemen keluar */
+    display: flex; align-items: center; justify-content: center;
 }
-
-.nav-content { 
-    width: 100%; height: 100%; 
-    display: flex; justify-content: space-between; align-items: center; 
-    padding: 0 10px; 
-}
-
-/* Logo "Xyon." */
-.nav-brand {
-    flex-shrink: 0; /* Jangan mengecil */
-    margin-right: 10px;
-}
-.brand-text { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.3rem; white-space: nowrap; }
+.nav-content { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+.brand-text { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; }
 .brand-dot { color: var(--accent); }
 
-/* Menu Kanan (Icons + Toggle) */
-.nav-controls { 
-    display: flex; align-items: center; gap: 5px; 
-    flex-shrink: 0; /* Jangan mengecil */
-}
-
-.nav-menu { 
-    display: flex; align-items: center; gap: 2px; 
-}
-
+/* Perbaikan Agar Tombol Sejajar */
+.nav-controls { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
+.nav-menu { display: flex; gap: 2px; }
 .nav-item { 
     background: transparent; border: none; width: 38px; height: 38px; 
     border-radius: 50%; color: var(--text-muted); cursor: pointer; 
-    display: flex; align-items: center; justify-content: center; font-size: 1.1rem; 
-    flex-shrink: 0; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
 }
 .nav-item.active { background: var(--bg-card); color: var(--accent); box-shadow: 0 4px 10px var(--shadow); }
-
-.nav-separator { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.nav-separator { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
 
 #theme-btn { 
     background: transparent; border: none; cursor: pointer; color: var(--text-main); width: 38px; height: 38px;
@@ -103,52 +77,25 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); col
 [data-theme="light"] #moon-icon { opacity: 0; transform: rotate(90deg); } 
 [data-theme="dark"] #sun-icon { opacity: 0; transform: rotate(-90deg); }
 
-/* MEDIA QUERY UNTUK LAYAR SANGAT KECIL (HP < 360px) */
-@media (max-width: 360px) {
-    .brand-text { font-size: 1.1rem; } /* Kecilkan logo */
-    .nav-item { width: 32px; height: 32px; font-size: 0.9rem; } /* Kecilkan icon */
-    .nav-controls { gap: 2px; }
-}
-
 /* PAGE SYSTEM */
-main { height: 100%; padding-top: 95px; /* Tambah padding atas agar konten tidak ketutup navbar */ position: relative; }
-.page { display: none; height: 100%; overflow-y: auto; padding: 10px 20px 120px; animation: fadeIn 0.4s ease; }
+main { height: 100%; padding-top: 80px; position: relative; }
+.page { display: none; height: 100%; overflow-y: auto; padding: 10px 20px 100px; animation: fadeIn 0.4s ease; }
 .page.active { display: block; }
 
-/* --- PROFILE --- */
-.hero-card { 
-    background: var(--bg-card); border-radius: 24px; padding: 30px 20px; 
-    border: 1px solid var(--border); text-align: center; max-width: 600px; 
-    margin: 0 auto 20px; position: relative; overflow: hidden; 
-}
+/* --- PROFILE & CARDS --- */
+.hero-card { background: var(--bg-card); border-radius: 24px; padding: 30px 20px; border: 1px solid var(--border); text-align: center; max-width: 600px; margin: 0 auto 20px; position: relative; overflow: hidden; }
 .hero-glow { position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: var(--accent); filter: blur(80px); opacity: 0.15; }
-
-/* FIX PROFILE IMAGE (BULAT) */
-.img-container { 
-    width: 120px; height: 120px; margin: 0 auto 20px; position: relative; 
-    border-radius: 50%; /* Pastikan container bulat */
-}
-.img-container img { 
-    width: 100%; height: 100%; border-radius: 50%; /* Pastikan gambar bulat */
-    border: 4px solid var(--bg-main); position: relative; z-index: 2; 
-    object-fit: cover; box-shadow: var(--shadow); 
-}
-.status-badge { 
-    position: absolute; bottom: 5px; right: 5px; 
-    background: var(--accent); color: white; width: 35px; height: 35px; 
-    border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-    border: 3px solid var(--bg-card); z-index: 3; font-size: 0.9rem; 
-}
-
+.img-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
+.img-container img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid var(--bg-main); position: relative; z-index: 2; object-fit: cover; box-shadow: var(--shadow); }
+.status-badge { position: absolute; bottom: 5px; right: 5px; background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-card); z-index: 3; font-size: 0.9rem; }
 .typing-container { margin-bottom: 5px; font-size: 0.9rem; font-weight: 600; color: var(--accent); display: flex; justify-content: center; align-items: center; gap: 2px; }
 .cursor { animation: blink 1s infinite; font-weight: 100; color: var(--text-muted); }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-.main-title { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; color: var(--text-main); }
+.main-title { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; color: var(--text-main); }
 .bio-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; opacity: 0.9; }
 
 /* STATS GRID */
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 600px; margin: 0 auto 20px; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 600px; margin: 20px auto; }
 .stat-card { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
 .stat-card:hover { transform: translateY(-3px); border-color: var(--accent); }
 .icon-box { width: 45px; height: 45px; border-radius: 12px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
@@ -175,22 +122,24 @@ main { height: 100%; padding-top: 95px; /* Tambah padding atas agar konten tidak
 .gold-icon { background: rgba(234, 179, 8, 0.1); color: #eab308; }
 .features li { list-style: none; margin-bottom: 8px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
 .app-footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
+.creator-name { color: var(--accent); font-weight: 700; }
 .page-header { text-align: center; margin-bottom: 25px; }
 
-/* ================= CHAT UI (PRODUSE STYLE - SOLID) ================= */
-#page-chatai {
+/* ==========================================================
+   UI CHAT BARU (PRODUSE STYLE - SOLID & COMPACT)
+========================================================== */
+.chat-ui-new {
     padding: 0 !important; position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
-    background: var(--chat-bg); 
-    z-index: 200; display: none; flex-direction: column;
+    background: var(--bg-main); z-index: 200; display: none; flex-direction: column;
 }
-#page-chatai.active { display: flex; }
+.chat-ui-new.active { display: flex; }
 
 /* HEADER CHAT */
 #ai_navbar {
     height: 60px; display: flex; justify-content: space-between; align-items: center;
-    padding: 0 15px; background-color: var(--bg-card); border-bottom: 1px solid var(--border); flex-shrink: 0;
+    padding: 0 20px; background-color: var(--bg-card); border-bottom: 1px solid var(--border); flex-shrink: 0;
 }
-#left, #right { display: flex; align-items: center; gap: 10px; }
+#left, #right { display: flex; align-items: center; gap: 15px; }
 #left i, #right i { font-size: 20px; cursor: pointer; color: var(--text-main); }
 #navbar_title { display: flex; flex-direction: column; }
 #navbar_title span { font-weight: 700; font-family: 'Outfit'; color: var(--accent); font-size: 1.1rem; }
@@ -201,12 +150,12 @@ main { height: 100%; padding-top: 95px; /* Tambah padding atas agar konten tidak
 
 /* AREA SCROLL CHAT */
 #chat_scroll_area {
-    flex-grow: 1; overflow-y: auto; padding: 15px 0 100px; /* Padding bawah lebih besar untuk input */
-    background: var(--chat-bg); width: 100%;
+    flex-grow: 1; overflow-y: auto; padding: 15px 0 100px; 
+    background: var(--bg-main); width: 100%;
 }
 #chat_container { 
     max-width: 800px; margin: 0 auto; padding: 0 15px; 
-    display: flex; flex-direction: column; gap: 15px; /* Jarak antar chat */
+    display: flex; flex-direction: column; gap: 15px;
 }
 
 /* BUBBLES */
@@ -224,34 +173,48 @@ main { height: 100%; padding-top: 95px; /* Tambah padding atas agar konten tidak
     padding: 10px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5;
     max-width: 80%; position: relative; word-wrap: break-word; box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
-.chat-bubble.bot { background: var(--bubble-bot-bg); color: var(--bubble-bot-text); border: 1px solid var(--border); border-top-left-radius: 4px; }
-.chat-bubble.user { background: var(--bubble-user-bg); color: var(--bubble-user-text); border-bottom-right-radius: 4px; }
+.chat-bubble.bot { background: var(--bot-bubble-bg); color: var(--text-main); border: 1px solid var(--border); border-top-left-radius: 4px; }
+.chat-bubble.user { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
 
-/* CODE BLOCK */
-.code-wrapper { margin: 10px 0; border-radius: 8px; overflow: hidden; background: #1e1e1e; border: 1px solid #333; width: 100%; }
-.code-header { display: flex; justify-content: flex-end; background: #252525; padding: 4px 10px; }
-.copy-code-btn { background: transparent; color: #ccc; border: none; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-.code-wrapper pre { margin: 0; padding: 12px; overflow-x: auto; }
-.code-wrapper code { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #d4d4d4; }
+/* ================= FIX KODE BOX AGAR LEBAR ================= */
+.code-wrapper {
+    margin: 10px 0;
+    border-radius: 8px;
+    overflow-x: auto; /* scroll horizontal jika panjang */
+    background: #1e1e1e;
+    border: 1px solid #333;
+    width: 100%; /* ambil full lebar container */
+    max-width: 100%; /* pastikan ga kepotong container */
+}
+
+.code-wrapper pre {
+    margin: 0;
+    padding: 12px;
+    overflow-x: auto; /* scroll horizontal */
+    white-space: pre; /* jaga formatting kode */
+}
+
+.code-wrapper code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #d4d4d4;
+    display: block; /* biar full width */
+}
+
+.code-wrapper .code-header { display: flex; justify-content: flex-end; background: #252525; padding: 4px 10px; }
+.code-wrapper .copy-code-btn { background: transparent; color: #ccc; border: none; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
 /* INPUT AREA */
-#input { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--input-area-bg); border-top: 1px solid var(--border); padding: 10px 15px; z-index: 50; padding-bottom: env(safe-area-inset-bottom, 15px); }
+#input { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--input-bg); border-top: 1px solid var(--border); padding: 10px 15px; z-index: 50; padding-bottom: env(safe-area-inset-bottom, 15px); }
 #input_box { max-width: 800px; margin: 0 auto; background: var(--bg-main); border: 1px solid var(--border); border-radius: 25px; padding: 5px 12px; display: flex; align-items: center; gap: 10px; }
 #ai_input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-size: 0.95rem; height: 24px; max-height: 100px; resize: none; }
 #send_button { background: var(--accent); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
 #send_button.disabled { background: var(--text-muted); cursor: not-allowed; }
 
 /* SIDEBAR */
-#ai_sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100%; background-color: var(--bg-card); border-right: 1px solid var(--border); padding: 20px; z-index: 300; transform: translateX(-100%); transition: 0.3s; display: flex; flex-direction: column; }
+#ai_sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100%; background-color: var(--chat-sidebar-bg); border-right: 1px solid var(--border); padding: 20px; z-index: 300; transform: translateX(-100%); transition: 0.3s; display: flex; flex-direction: column; }
 #ai_sidebar.active { transform: translateX(0); }
 #sidebar_background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 299; opacity: 0; pointer-events: none; transition: 0.3s; }
 #sidebar_background.active { opacity: 1; pointer-events: auto; }
-#new_chat_button { width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.conversation_item { padding: 10px; border-radius: 8px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.conversation_item.active { background: var(--accent-glow); color: var(--accent); font-weight: 600; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.animate-up { animation: fadeInUp 0.6s ease forwards; opacity: 0; transform: translateY(20px); }
-.animate-left { animation: fadeInLeft 0.6s ease forwards; opacity: 0; transform: translateX(-20px); }
-@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeInLeft { to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; } to
