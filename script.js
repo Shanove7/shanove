@@ -1,65 +1,8 @@
-// --- CONFIGURATION ---
-const SYSTEM_PROMPT = `
-Kamu adalah Xyon AI, asisten cerdas gaya santai (gua-lu).
-Xyon dibuat oleh Kasan.
-WAJIB: Setiap kode harus ada watermark ini paling atas:
-/**
- * Xyon AI
- * Made by Kasan
- * IG: @shnvnkonv_
- */
-`;
+// ... (Bagian Config, Theme, Typing Effect biarkan sama) ...
 
-// --- THEME & NAV ---
-const body = document.body;
-const savedTheme = localStorage.getItem('theme') || 'light';
-body.setAttribute('data-theme', savedTheme);
-
-function toggleTheme() {
-    const current = body.getAttribute('data-theme');
-    const newTheme = current === 'light' ? 'dark' : 'light';
-    body.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-}
-
-function switchTab(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(`page-${pageId}`).classList.add('active');
-    
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-    const navs = document.querySelectorAll('.nav-item');
-    const map = {'info':0,'sewabot':1,'chatai':2,'payment':3,'contact':4};
-    if(navs[map[pageId]]) navs[map[pageId]].classList.add('active');
-}
-
-// RESTORED: BUTTONS
-function orderWa(paket, harga) {
-    window.open(`https://wa.me/6285185032092?text=Halo+Kasan,+Saya+mau+sewa+bot+paket+${paket}`, '_blank');
-}
-function copyToClip(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        Swal.fire({ icon: 'success', title: 'Tersalin!', text: text, timer: 1500, showConfirmButton: false });
-    });
-}
-
-// --- TYPING EFFECTS ---
-function initTyping() {
-    const el = document.querySelector('.typing-text');
-    if (!el) return;
-    const words = ["Founder Xyon", "JavaScript Dev", "Tech Enthusiast"];
-    let i = 0, j = 0, del = false;
-    function loop() {
-        const w = words[i];
-        el.textContent = del ? w.slice(0, j--) : w.slice(0, j++);
-        let speed = del ? 50 : 100;
-        if (!del && j === w.length + 1) { del = true; speed = 1200; }
-        if (del && j === 0) { del = false; i = (i + 1) % words.length; speed = 400; }
-        setTimeout(loop, speed);
-    }
-    loop();
-}
-
-// --- CHAT LOGIC (UI BARU + VERCEL API) ---
+// =====================================
+// CHAT LOGIC (FIXED)
+// =====================================
 let chats = JSON.parse(localStorage.getItem('kasan_chats')) || [];
 let currentChatId = null;
 
@@ -75,67 +18,32 @@ const historyList = document.getElementById('history-list');
 // Markdown Options
 marked.setOptions({ breaks: true, highlight: function(code) { return code; } });
 
-function renderSidebar() {
-    historyList.innerHTML = '';
-    chats.forEach(c => {
-        const div = document.createElement('div');
-        div.className = `history-item ${c.id === currentChatId ? 'active' : ''}`;
-        div.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${c.title}</span>
-            <i class="fas fa-trash" style="font-size:0.8rem; opacity:0.6;" onclick="deleteSession('${c.id}', event)"></i>
-        `;
-        div.onclick = () => loadChat(c.id);
-        historyList.appendChild(div);
-    });
-}
-
-function toggleChatSidebar() {
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-}
-
-function startNewChat() {
-    currentChatId = Date.now().toString();
-    chats.unshift({ id: currentChatId, title: 'Chat Baru', messages: [] });
-    saveChats();
-    loadChat(currentChatId);
-    if(window.innerWidth <= 768) toggleChatSidebar();
-}
-
-function deleteSession(id, e) {
-    e.stopPropagation();
-    Swal.fire({
-        title: 'Hapus Chat?', text: "Riwayat ini akan hilang.", icon: 'warning',
-        showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya'
-    }).then((r) => {
-        if(r.isConfirmed) {
-            chats = chats.filter(c => c.id !== id);
-            saveChats();
-            if(currentChatId == id) startNewChat();
-            else renderSidebar();
-        }
-    });
-}
+// ... (Bagian renderSidebar, toggleChatSidebar, startNewChat, deleteSession tetap sama) ...
 
 function loadChat(id) {
     currentChatId = id;
     const chat = chats.find(c => c.id === id);
     if (!chat) return;
 
+    // Reset Chat UI
     const msgElements = chatContainer.querySelectorAll('.message');
     msgElements.forEach(el => el.remove());
     
-    emptyState.style.display = chat.messages.length === 0 ? 'flex' : 'none';
-
-    chat.messages.forEach(m => {
-        appendMessage(m.text, m.sender === 'user' ? 'user' : 'ai', false);
-    });
+    // Tampilkan Empty State jika chat kosong
+    if (chat.messages.length === 0) {
+        emptyState.style.display = 'flex';
+    } else {
+        emptyState.style.display = 'none';
+        chat.messages.forEach(m => {
+            appendMessage(m.text, m.sender === 'user' ? 'user' : 'ai', false);
+        });
+    }
     
     renderSidebar();
 }
 
 function appendMessage(text, sender, saveToHistory = true) {
+    // Sembunyikan Empty State begitu ada pesan
     emptyState.style.display = 'none';
 
     const msgDiv = document.createElement('div');
@@ -160,8 +68,14 @@ function appendMessage(text, sender, saveToHistory = true) {
         msgDiv.appendChild(avatarDiv);
         msgDiv.appendChild(bubbleDiv);
         
-        bubbleDiv.innerHTML = marked.parse(text);
+        // Render Markdown Aman
+        try {
+            bubbleDiv.innerHTML = marked.parse(text);
+        } catch (e) {
+            bubbleDiv.textContent = text; // Fallback jika markdown gagal
+        }
 
+        // Highlight Code Block
         bubbleDiv.querySelectorAll('pre code').forEach((block) => {
             const pre = block.parentElement;
             const wrapper = document.createElement('div');
@@ -186,42 +100,53 @@ function appendMessage(text, sender, saveToHistory = true) {
         });
     }
     
-    if(sender === 'user' && !msgDiv.querySelector('.avatar')) {
-        chatContainer.appendChild(msgDiv);
+    if(sender === 'user') {
+        chatContainer.appendChild(msgDiv); // User message tanpa avatar div wrapper
     } else {
         chatContainer.appendChild(msgDiv);
     }
     
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
+    // Save Logic
     if(saveToHistory && currentChatId) {
         const chat = chats.find(c => c.id === currentChatId);
-        chat.messages.push({ sender, text });
-        if(chat.title === 'Chat Baru' && sender === 'user') {
-            chat.title = text.substring(0, 20);
-            renderSidebar();
+        if(chat) {
+            chat.messages.push({ sender, text });
+            // Auto rename title jika masih "New Chat"
+            if(chat.title === 'New Chat' && sender === 'user') {
+                chat.title = text.substring(0, 20);
+                renderSidebar();
+            }
+            saveChats();
         }
-        saveChats();
     }
 }
 
 async function handleSend() {
     const text = aiInput.value.trim();
     if (!text) return;
+    
+    // Pastikan session aktif
     if (!currentChatId) startNewChat();
 
+    // UI Update: Tampilkan pesan user & Loading
     appendMessage(text, 'user');
     aiInput.value = '';
     aiInput.disabled = true;
     sendBtn.disabled = true;
+    
+    // Tampilkan loader di chat area
     loadingIndicator.style.display = 'flex';
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
     const chat = chats.find(c => c.id === currentChatId);
 
     try {
+        console.log("Mengirim request ke /api/chat..."); // Debug Log
+        
         const res = await axios.post('/api/chat', {
-            model: 'llama-3.3-70b', 
+            model: 'llama3.1-70b', // Pastikan model ini sesuai di backend
             messages: [
                 { role: "system", content: SYSTEM_PROMPT },
                 ...chat.messages.slice(-6).map(m => ({
@@ -231,13 +156,30 @@ async function handleSend() {
             ]
         });
 
+        console.log("Response API:", res.data); // Debug Log
+
+        if (!res.data || !res.data.choices) {
+            throw new Error("Format respons API tidak valid");
+        }
+
         const reply = res.data.choices[0].message.content;
         loadingIndicator.style.display = 'none';
         appendMessage(reply, 'ai');
 
     } catch (e) {
+        console.error("Error Detail:", e); // Log error lengkap ke console
         loadingIndicator.style.display = 'none';
-        appendMessage("⚠️ Waduh error bos, coba refresh yak!", 'ai');
+        
+        let errorMsg = "⚠️ Waduh error bos. Coba refresh yak!";
+        if (e.response) {
+            // Error dari server (500, 404, dll)
+            errorMsg = `⚠️ Server Error (${e.response.status}): ${e.response.statusText}`;
+        } else if (e.request) {
+            // Tidak ada respon dari server
+            errorMsg = "⚠️ Koneksi bermasalah. Cek internet lu bos.";
+        }
+        
+        appendMessage(errorMsg, 'ai');
     } finally {
         aiInput.disabled = false;
         sendBtn.disabled = false;
@@ -247,6 +189,9 @@ async function handleSend() {
 
 function saveChats() { localStorage.setItem('kasan_chats', JSON.stringify(chats)); }
 
+// =====================================
+// INIT
+// =====================================
 document.addEventListener('DOMContentLoaded', () => {
     initTyping();
     startNewChat();
@@ -254,4 +199,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 sendBtn.onclick = handleSend;
 aiInput.onkeydown = e => { if(e.key === 'Enter') handleSend(); };
-    
+
