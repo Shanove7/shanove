@@ -1,176 +1,139 @@
 // =====================================
-// CONFIG & DATA
+// 1. CONFIGURATION
 // =====================================
-const SYSTEM_PROMPT = "Anda adalah Kasan (Xyon AI), asisten yang santai, gaul, tapi tetap membantu. Gunakan bahasa Indonesia sehari-hari (lu/gua) yang akrab.";
+const CEREBRAS_API_KEY = "MASUKKAN_API_KEY_KAMU_DISINI"; 
+
+const SYSTEM_PROMPT = `
+Role: Kamu adalah Kasan (Xyon AI), asisten pribadi Kasan.
+Style: Gaul, santai, pake lo/gue, tapi jenius coding.
+Context: User sedang di website portofolio Kasan.
+Task: Jawab pertanyaan coding, sewa bot, atau tentang Kasan.
+Format: Gunakan Markdown rapi untuk kode.
+`;
+
 let chats = JSON.parse(localStorage.getItem('kasan_chats')) || [];
 let currentChatId = null;
 
 // =====================================
-// UI LOGIC (NAVIGATION & THEME)
+// 2. MARKDOWN & UTILS
+// =====================================
+const renderer = new marked.Renderer();
+renderer.code = function(code, language) {
+    const validLang = !!(language && hljs.getLanguage(language)) ? language : 'plaintext';
+    const highlighted = hljs.highlight(code, { language: validLang }).value;
+    const randomId = 'code-' + Math.random().toString(36).substr(2, 9);
+    
+    return `
+    <div class="code-wrapper">
+        <div class="code-header">
+            <div class="code-controls">
+                <div class="code-dot dot-red"></div>
+                <div class="code-dot dot-yellow"></div>
+                <div class="code-dot dot-green"></div>
+            </div>
+            <span class="code-lang">${validLang}</span>
+            <button class="copy-code-btn" onclick="copyCode('${randomId}', this)">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        <pre><code id="${randomId}" class="hljs ${validLang}">${highlighted}</code></pre>
+    </div>`;
+};
+marked.setOptions({ renderer: renderer, breaks: true });
+
+function copyCode(id, btn) {
+    const codeBlock = document.getElementById(id);
+    if(codeBlock) {
+        navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.color = '#4ade80';
+            setTimeout(() => { btn.innerHTML = originalHTML; btn.style.color = ''; }, 2000);
+        });
+    }
+}
+
+// Fungsi Copy Wallet (DANA/GOPAY)
+function copyToClip(text) {
+    navigator.clipboard.writeText(text);
+    Swal.fire({ 
+        icon: 'success', 
+        title: 'Disalin!', 
+        text: text,
+        timer: 1000, 
+        showConfirmButton: false 
+    });
+}
+
+// =====================================
+// 3. UI NAVIGATION
 // =====================================
 function switchTab(tabId) {
-    // 1. Hide all pages
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
 
-    // 2. Remove active state from all nav items
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
+    const target = document.getElementById(`page-${tabId}`);
+    if (target) target.classList.add('active');
 
-    // 3. Show selected page
-    const targetPage = document.getElementById(`page-${tabId}`);
-    if (targetPage) {
-        targetPage.classList.add('active');
-        // Scroll to top when switching
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    const idxMap = { 'info':0, 'sewabot':1, 'chatai':2, 'payment':3, 'contact':4 };
+    const navs = document.querySelectorAll('.nav-menu .nav-item');
+    if (navs[idxMap[tabId]]) navs[idxMap[tabId]].classList.add('active');
 
-    // 4. Highlight Nav Item
-    // Note: index map: info(0), sewabot(1), chatai(2), payment(3), contact(4)
-    const navItems = document.querySelectorAll('.nav-menu .nav-item');
-    const indexMap = { 'info': 0, 'sewabot': 1, 'chatai': 2, 'payment': 3, 'contact': 4 };
-    
-    if (indexMap[tabId] !== undefined && navItems[indexMap[tabId]]) {
-        navItems[indexMap[tabId]].classList.add('active');
-    }
-
-    // Special logic for Chat AI page (Fullscreen mode)
     if (tabId === 'chatai') {
-        document.body.style.overflow = 'hidden'; // Lock body scroll
+        document.body.style.overflow = 'hidden';
+        const emptyState = document.getElementById('empty-state');
+        if(emptyState && emptyState.style.display !== 'none') triggerRobotGreeting();
     } else {
-        document.body.style.overflow = ''; // Unlock
+        document.body.style.overflow = '';
     }
 }
 
 function toggleTheme() {
     const html = document.documentElement;
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
 }
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-// Load Theme on Start
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-
-// =====================================
-// TYPING EFFECT (Halaman Info)
-// =====================================
 function initTyping() {
-    const textElement = document.querySelector('.typing-text');
-    const words = ["Web Developer", "Bot Creator", "Freelancer", "Bug Hunter"];
-    let wordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typeSpeed = 100;
-
+    const el = document.querySelector('.typing-text');
+    if(!el) return;
+    const words = ["Web Developer", "Bot Creator", "Xyon Founder"];
+    let i=0, j=0, isDeleting=false;
     function type() {
-        const currentWord = words[wordIndex];
-        
-        if (isDeleting) {
-            textElement.textContent = currentWord.substring(0, charIndex - 1);
-            charIndex--;
-            typeSpeed = 50;
-        } else {
-            textElement.textContent = currentWord.substring(0, charIndex + 1);
-            charIndex++;
-            typeSpeed = 100;
+        const cur = words[i];
+        el.textContent = cur.substring(0, j);
+        if(!isDeleting && j < cur.length) { j++; setTimeout(type, 100); }
+        else if(isDeleting && j > 0) { j--; setTimeout(type, 50); }
+        else {
+            if(!isDeleting) { isDeleting = true; setTimeout(type, 2000); }
+            else { isDeleting = false; i=(i+1)%words.length; setTimeout(type, 500); }
         }
-
-        if (!isDeleting && charIndex === currentWord.length) {
-            isDeleting = true;
-            typeSpeed = 2000; // Pause at end
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            wordIndex = (wordIndex + 1) % words.length;
-            typeSpeed = 500;
-        }
-
-        setTimeout(type, typeSpeed);
     }
-    
-    if(textElement) type();
+    type();
 }
 
-// =====================================
-// UTILS
-// =====================================
-function orderWa(paket, harga) {
-    const phone = "6285185032092";
-    const text = `Halo Kasan, saya mau order paket Bot *${paket}* seharga Rp ${harga}. Mohon infonya.`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
-}
-
-function copyToClip(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Disalin!',
-            text: text,
-            timer: 1500,
-            showConfirmButton: false,
-            background: getComputedStyle(document.body).getPropertyValue('--bg-card'),
-            color: getComputedStyle(document.body).getPropertyValue('--text-main')
-        });
-    });
-}
+function orderWa(pkt, hrg) { window.open(`https://wa.me/6285185032092?text=Halo%20Kasan,%20mau%20order%20${pkt}%20${hrg}`, '_blank'); }
 
 // =====================================
-// CHAT AI LOGIC
+// 4. CHAT LOGIC
 // =====================================
-// Initialize UI Elements
 const chatSidebar = document.getElementById('saann-sidebar');
 const chatOverlay = document.getElementById('chat-overlay');
-const chatContainer = document.getElementById('chat_container');
 const aiInput = document.getElementById('ai_input');
 const sendBtn = document.getElementById('send_button');
-const loadingIndicator = document.getElementById('loading');
 const emptyState = document.getElementById('empty-state');
 const historyList = document.getElementById('history-list');
 
-// Markdown
-marked.setOptions({ breaks: true });
-
-function toggleChatSidebar() {
-    if(!chatSidebar) return;
-    chatSidebar.classList.toggle('active');
-    chatOverlay.classList.toggle('active');
-}
+function toggleChatSidebar() { chatSidebar.classList.toggle('active'); chatOverlay.classList.toggle('active'); }
 
 function startNewChat() {
     currentChatId = Date.now().toString();
-    const newChat = { id: currentChatId, title: "New Chat", messages: [] };
-    chats.push(newChat);
+    chats.push({ id: currentChatId, title: "New Chat", messages: [] });
     saveChats();
     loadChat(currentChatId);
-    
-    // Auto close sidebar on mobile after new chat
-    if(window.innerWidth < 768) {
-        chatSidebar.classList.remove('active');
-        chatOverlay.classList.remove('active');
-    }
-}
-
-function renderSidebar() {
-    if(!historyList) return;
-    historyList.innerHTML = '';
-    
-    // Sort by newest
-    const sortedChats = [...chats].reverse();
-    
-    sortedChats.forEach(chat => {
-        const item = document.createElement('div');
-        item.className = `history-item ${chat.id === currentChatId ? 'active' : ''}`;
-        item.innerHTML = `<i class="far fa-comment-alt"></i> <span>${chat.title}</span>`;
-        item.onclick = () => {
-            loadChat(chat.id);
-            if(window.innerWidth < 768) toggleChatSidebar(); // Auto close on click
-        };
-        historyList.appendChild(item);
-    });
+    if(window.innerWidth < 768) { chatSidebar.classList.remove('active'); chatOverlay.classList.remove('active'); }
 }
 
 function loadChat(id) {
@@ -178,103 +141,109 @@ function loadChat(id) {
     const chat = chats.find(c => c.id === id);
     if (!chat) return;
 
-    // Clear Container
-    const msgElements = document.querySelectorAll('.message');
-    msgElements.forEach(el => el.remove());
-    
-    // Show/Hide Empty State
+    document.querySelectorAll('.message').forEach(el => el.remove());
     if (chat.messages.length === 0) {
         emptyState.style.display = 'flex';
+        triggerRobotGreeting();
     } else {
         emptyState.style.display = 'none';
-        chat.messages.forEach(m => {
-            appendMessage(m.text, m.sender, false);
-        });
+        chat.messages.forEach(m => appendMessage(m.text, m.sender, false));
     }
-    
     renderSidebar();
+}
+
+function triggerRobotGreeting() {
+    const robotIcon = document.querySelector('.empty-state i');
+    if(robotIcon) {
+        robotIcon.className = "fas fa-robot robot-bounce";
+        setTimeout(() => {
+            const title = document.querySelector('.empty-state h3');
+            if(title) title.innerText = "Halo! Xyon AI Siap Bantu 🤖";
+        }, 500);
+    }
 }
 
 function appendMessage(text, sender, saveToHistory = true) {
     emptyState.style.display = 'none';
-
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${sender}`;
-
-    const avatar = document.createElement('div');
-    avatar.className = `avatar ${sender}`;
-    avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
-
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble markdown-content';
-    
-    if (sender === 'ai') {
-        bubble.innerHTML = marked.parse(text);
-        // Highlight Code
-        bubble.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block);
-        });
+    const contentHTML = sender === 'ai' ? marked.parse(text) : text;
+    let html = '';
+    if(sender === 'ai') {
+        html = `<div class="avatar ai"><i class="fas fa-robot"></i></div><div class="bubble markdown-content">${contentHTML}</div>`;
     } else {
-        bubble.textContent = text;
+        html = `<div class="bubble">${contentHTML}</div>`;
     }
-
-    if(sender === 'user') {
-        msgDiv.appendChild(bubble);
-        // User doesn't strictly need avatar displayed, but consistent structure is fine
-    } else {
-        msgDiv.appendChild(avatar);
-        msgDiv.appendChild(bubble);
-    }
-    
-    document.getElementById('chat-container').appendChild(msgDiv);
-    document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+    msgDiv.innerHTML = html;
+    const container = document.getElementById('chat-container');
+    container.appendChild(msgDiv);
+    container.scrollTop = container.scrollHeight;
 
     if(saveToHistory && currentChatId) {
         const chat = chats.find(c => c.id === currentChatId);
         if(chat) {
             chat.messages.push({ sender, text });
-            if(chat.title === 'New Chat' && sender === 'user') {
-                chat.title = text.substring(0, 20);
-            }
+            if(chat.title === 'New Chat' && sender === 'user') chat.title = text.substring(0, 15) + '...';
             saveChats();
             renderSidebar();
         }
     }
 }
 
+function renderSidebar() {
+    historyList.innerHTML = '';
+    [...chats].reverse().forEach(chat => {
+        const item = document.createElement('div');
+        item.className = `history-item ${chat.id === currentChatId ? 'active' : ''}`;
+        item.innerHTML = `<i class="far fa-comment-dots"></i> ${chat.title}`;
+        item.onclick = () => loadChat(chat.id);
+        historyList.appendChild(item);
+    });
+}
+
 async function handleSend() {
     const text = aiInput.value.trim();
     if (!text) return;
-    
     if (!currentChatId) startNewChat();
 
     appendMessage(text, 'user');
     aiInput.value = '';
     aiInput.disabled = true;
     sendBtn.disabled = true;
-    loadingIndicator.style.display = 'flex';
+    
+    const loadingId = 'loading-' + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'message ai';
+    loadingDiv.id = loadingId;
+    loadingDiv.innerHTML = `<div class="avatar ai"><i class="fas fa-robot fa-bounce"></i></div><div class="bubble" style="color:#a1a1aa; font-style:italic;">Sedang mengetik...</div>`;
+    document.getElementById('chat-container').appendChild(loadingDiv);
+    document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
 
     try {
         const chat = chats.find(c => c.id === currentChatId);
-        const history = chat ? chat.messages.map(m => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.text
-        })) : [];
+        const messages = [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...chat.messages.map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text })),
+            { role: "user", content: text }
+        ];
 
-        // Simulasi API (Ganti URL ini dengan backend aslimu)
-        // const res = await axios.post('/api/chat', ...);
-        
-        // --- MOCK RESPONSE UNTUK DEMO (HAPUS BAGIAN INI JIKA SUDAH ADA BACKEND) ---
-        await new Promise(r => setTimeout(r, 1500)); // Simulasi delay
-        const mockReply = "Halo! Gua Xyon AI. Backend belum connect nih, tapi UI udah fix lancar jaya! 😎";
-        // ------------------------------------------------------------------------
+        const response = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${CEREBRAS_API_KEY}` },
+            body: JSON.stringify({ model: "llama3.1-70b", messages: messages, max_tokens: 2000, temperature: 0.7 })
+        });
 
-        loadingIndicator.style.display = 'none';
-        appendMessage(mockReply, 'ai');
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+
+        if (data.choices && data.choices[0]) {
+            appendMessage(data.choices[0].message.content, 'ai');
+        } else { throw new Error('No response'); }
 
     } catch (e) {
-        loadingIndicator.style.display = 'none';
-        appendMessage("Error: Gagal terhubung ke server.", 'ai');
+        if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+        console.error(e);
+        appendMessage("Error: Cek API Key.", 'ai');
     } finally {
         aiInput.disabled = false;
         sendBtn.disabled = false;
@@ -284,23 +253,11 @@ async function handleSend() {
 
 function saveChats() { localStorage.setItem('kasan_chats', JSON.stringify(chats)); }
 
-// =====================================
-// INIT APP
-// =====================================
 document.addEventListener('DOMContentLoaded', () => {
     initTyping();
-    // Load halaman pertama (Info)
     switchTab('info');
-    
-    // Load Chat history if exists
-    if(chats.length > 0) {
-        renderSidebar();
-    } else {
-        startNewChat();
-    }
+    if(chats.length > 0) renderSidebar();
+    sendBtn.onclick = handleSend;
+    aiInput.onkeydown = e => { if(e.key === 'Enter') handleSend(); };
 });
 
-// Event Listeners
-if(sendBtn) sendBtn.onclick = handleSend;
-if(aiInput) aiInput.onkeydown = e => { if(e.key === 'Enter') handleSend(); };
-        
