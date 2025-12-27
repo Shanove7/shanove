@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;500;700&family=Fira+Code:wght@400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
@@ -63,7 +62,7 @@
                             Spesialis Bot WhatsApp & Web Development.
                         </div>
                         <div class="social-links">
-                            <a href="https://www.instagram.com/shnvnkonv_?igsh=MWhqcndsemZkNnpueg==" class="soc-btn" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a href="https://instagram.com/" class="soc-btn" target="_blank"><i class="fab fa-instagram"></i></a>
                             <a href="https://github.com/Shanove7" class="soc-btn" target="_blank"><i class="fab fa-github"></i></a>
                             <a href="https://wa.me/6285185032092" class="soc-btn" target="_blank"><i class="fab fa-whatsapp"></i></a>
                         </div>
@@ -124,22 +123,6 @@
                     </ul>
                     <button class="action-btn filled" onclick="orderWa('Premium', '35.000')">Order Premium</button>
                 </div>
-
-                <div class="price-card">
-                    <div class="price-header">
-                        <div class="price-icon gold-icon"><i class="fas fa-gem"></i></div>
-                        <div>
-                            <span class="plan-name">ULTIMATE (Pribadi)</span>
-                            <span class="price">Rp 55.000<small>/bln</small></span>
-                        </div>
-                    </div>
-                    <ul class="features">
-                        <li><i class="fas fa-check-circle"></i> <b>Fitur Full Unlock</b></li>
-                        <li><i class="fas fa-check-circle"></i> Custom Nama Bot</li>
-                        <li><i class="fas fa-check-circle"></i> Prioritas Support</li>
-                    </ul>
-                    <button class="action-btn outline" onclick="orderWa('Ultimate', '55.000')">Order Ultimate</button>
-                </div>
             </div>
         </section>
 
@@ -151,7 +134,6 @@
                 </button>
                 <div class="history-label">RIWAYAT</div>
                 <div class="history-list" id="history-list"></div>
-                
                 <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #71717a;">
                     Xyon AI v2.0
                 </div>
@@ -169,19 +151,15 @@
                 </header>
 
                 <div id="chat-container">
-                    <div class="empty-state" id="empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #52525b; text-align: center;">
+                    <div class="empty-state" id="empty-state">
                         <i class="fas fa-robot" style="font-size: 3rem; margin-bottom: 15px; color: #27272a;"></i>
                         <h3>Ada yang bisa gua bantu?</h3>
                     </div>
                 </div>
 
-                <div class="loader" id="loading" style="display: none; padding: 0 20px; color: #a1a1aa; font-size: 0.8rem;">
-                    <i class="fas fa-circle-notch fa-spin"></i> Mengetik...
-                </div>
-
                 <div class="input-wrapper-outer">
                     <div class="input-box">
-                        <input type="text" id="ai_input" placeholder="Tanya Xyon..." autocomplete="off">
+                        <input type="text" id="ai_input" placeholder="Tanya sesuatu..." autocomplete="off">
                         <button id="send_button"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -197,7 +175,7 @@
             
             <div class="qris-container" style="text-align: center; margin-bottom: 25px;">
                 <div style="background: white; padding: 20px; border-radius: 20px; display: inline-block; box-shadow: var(--shadow);">
-                    <h4 style="margin-bottom: 10px; color: black;">SCAN QRIS (All Payment)</h4>
+                    <h4 style="margin-bottom: 10px; color: black;">SCAN QRIS</h4>
                     <img src="https://files.catbox.moe/ohqgw7.jpg" alt="QRIS Code" style="width: 100%; max-width: 250px; border-radius: 10px;">
                     <p style="margin-top: 10px; font-size: 0.9rem; color: #333;">A.n Kasan Xyon</p>
                 </div>
@@ -237,5 +215,5 @@
 
     <script src="script.js"></script>
 </body>
-    </html>
-                                                                          
+                    </html>
+                                
