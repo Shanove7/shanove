@@ -1,27 +1,43 @@
-import OpenAI from "openai";
-
 export default async function handler(req, res) {
-  // Cek harus method POST
+  // 1. Cek Method
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const client = new OpenAI({
-    baseURL: "https://api.cerebras.ai/v1",
-    apiKey: process.env.CEREBRAS_API_KEY, // Ini ngambil dari Vercel tadi
-  });
+  // 2. Ambil Pesan & Key
+  const { messages } = req.body;
+  const apiKey = process.env.CEREBRAS_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API Key belum disetting di Vercel' });
+  }
 
   try {
-    const { messages } = req.body; // Langsung ambil body
-
-    const completion = await client.chat.completions.create({
-      messages: messages,
-      model: "qwen-3-235b-a22b-instruct-2507",
+    // 3. Request ke Cerebras pake fetch bawaan (biar ga usah install openai sdk)
+    const response = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "llama3-70b-8192",
+        messages: messages,
+        temperature: 0.7
+      })
     });
 
-    res.status(200).json(completion.choices[0].message);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Error dari Cerebras');
+    }
+
+    // 4. Kirim balik
+    res.status(200).json(data.choices[0].message);
+
   } catch (error) {
-    res.status(500).json({ error: "Xyon AI Error: " + error.message });
+    res.status(500).json({ error: error.message });
   }
 }
 
