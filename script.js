@@ -1,7 +1,7 @@
 // =====================================
 // 1. CONFIGURATION
 // =====================================
-const CEREBRAS_API_KEY = "MASUKKAN_API_KEY_KAMU_DISINI"; 
+const CEREBRAS_API_KEY = "csk-mwxrfk94v8txn2nw2ym538hk38j6cm9vketfxrd9xcf6jc4t"; 
 
 const SYSTEM_PROMPT = `
 Role: Kamu adalah Kasan (Xyon AI), asisten pribadi Kasan.
